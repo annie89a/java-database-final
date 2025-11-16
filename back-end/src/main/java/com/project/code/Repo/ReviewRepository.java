@@ -1,18 +1,17 @@
 package com.project.code.Repo;
 
-public interface ReviewRepository {
-// 1. Add the repository interface:
-//    - Extend MongoRepository<Review, String> to inherit basic CRUD functionality for MongoDB operations.
-//    - This allows the repository to perform operations like save, delete, update, and find without having to implement these methods manually.
+import com.example.bookstoreHibernate.model.Review;
+import org.springframework.data.mongodb.repository.MongoRepository;
+import org.springframework.stereotype.Repository;
 
-// Example: public interface ReviewRepository extends MongoRepository<Review, String> {}
+import java.util.List;
 
-// 2. Add custom query methods:
-//    - **findByStoreIdAndProductId**:
-//      - This method will retrieve reviews for a specific product and store.
-//      - Return type: List<Review>
-//      - Parameters: Long storeId, Long productId
+@Repository
+public interface ReviewRepository extends MongoRepository<Review, String> {
+    
+    // Find reviews for a specific product in a specific store
+    List<Review> findByStoreIdAndProductId(Long storeId, Long productId);
 
-// Example: public List<Review> findByStoreIdAndProductId(Long storeId, Long productId);
-
+    // Optional: Add other query methods if needed, e.g., by customerId
+    List<Review> findByCustomerId(Long customerId);
 }
