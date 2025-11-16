@@ -1,7 +1,6 @@
 package com.project.code.Service;
 
-import com.example.bookstoreHibernate.model.*;
-import com.example.bookstoreHibernate.repository.*;
+
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
