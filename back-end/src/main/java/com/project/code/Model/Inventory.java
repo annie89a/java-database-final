@@ -10,7 +10,7 @@ import jakarta.validation.constraints.NotNull;
 public class Inventory {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private Long id;
 
     @ManyToOne
     @JsonBackReference("inventory-product")

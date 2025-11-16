@@ -14,7 +14,7 @@ import java.util.List;
 public class Customer {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private Long id;
     @NotNull(message = "Name cannot be null")
     private String name;
     @NotNull(message = "Email cannot be null")
