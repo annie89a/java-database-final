@@ -4,8 +4,8 @@ package com.project.code.Model;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -16,29 +16,28 @@ public class Store {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotNull
+    @NotBlank
     private String name;
 
-    @NotNull
     @NotBlank
     private String address;
 
     @OneToMany(mappedBy = "store", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonManagedReference("inventory-store")
-    private List<Inventory> inventoryEntries;
+    private List<Inventory> inventoryEntries = new ArrayList<>();
 
     @OneToMany(mappedBy = "store", fetch = FetchType.LAZY)
     @JsonManagedReference("store-orders")
-    private List<OrderDetails> orders;
+    private List<OrderDetails> orders = new ArrayList<>();
 
     public Store() {
     }
 
-    public long getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
@@ -64,5 +63,13 @@ public class Store {
 
     public void setInventoryEntries(List<Inventory> inventoryEntries) {
         this.inventoryEntries = inventoryEntries;
+    }
+
+    public List<OrderDetails> getOrders() {
+        return orders;
+    }
+
+    public void setOrders(List<OrderDetails> orders) {
+        this.orders = orders;
     }
 }

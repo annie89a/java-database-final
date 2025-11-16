@@ -1,27 +1,96 @@
 package com.project.code.Service;
 
+import com.example.bookstoreHibernate.model.*;
+import com.example.bookstoreHibernate.repository.*;
+import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
+import java.util.List;
+
+@Service
 public class OrderService {
-// 1. **saveOrder Method**:
-//    - Processes a customer's order, including saving the order details and associated items.
-//    - Parameters: `PlaceOrderRequestDTO placeOrderRequest` (Request data for placing an order)
-//    - Return Type: `void` (This method doesn't return anything, it just processes the order)
 
-// 2. **Retrieve or Create the Customer**:
-//    - Check if the customer exists by their email using `findByEmail`.
-//    - If the customer exists, use the existing customer; otherwise, create and save a new customer using `customerRepository.save()`.
+    private final ProductRepository productRepository;
 
-// 3. **Retrieve the Store**:
-//    - Fetch the store by ID from `storeRepository`.
-//    - If the store doesn't exist, throw an exception. Use `storeRepository.findById()`.
+    private final InventoryRepository inventoryRepository;
 
-// 4. **Create OrderDetails**:
-//    - Create a new `OrderDetails` object and set customer, store, total price, and the current timestamp.
-//    - Set the order date using `java.time.LocalDateTime.now()` and save the order with `orderDetailsRepository.save()`.
+    private final CustomerRepository customerRepository;
 
-// 5. **Create and Save OrderItems**:
-//    - For each product purchased, find the corresponding inventory, update stock levels, and save the changes using `inventoryRepository.save()`.
-//    - Create and save `OrderItem` for each product and associate it with the `OrderDetails` using `orderItemRepository.save()`.
+    private final StoreRepository storeRepository;
 
-   
+    private final OrderDetailsRepository orderDetailsRepository;
+
+    private final OrderItemRepository orderItemRepository;
+
+    public OrderService(ProductRepository productRepository, CustomerRepository customerRepository,
+            StoreRepository storeRepository, OrderDetailsRepository orderDetailsRepository,
+            OrderItemRepository orderItemRepository, InventoryRepository inventoryRepository) {
+        this.productRepository = productRepository;
+        this.customerRepository = customerRepository;
+        this.storeRepository = storeRepository;
+        this.orderDetailsRepository = orderDetailsRepository;
+        this.orderItemRepository = orderItemRepository;
+        this.inventoryRepository = inventoryRepository;
+    }
+
+    public void saveOrder(PlaceOrderRequestDTO request) {
+        // 1: retrieve/create customer
+        Customer customer = createOrRetrieveCustomer(request.getEmail());
+
+        // 2: retrieve store
+        Store store = retrieveStore(request.getStoreId());
+
+        // 3: create and save OrderDetails
+        OrderDetails order = createOrderDetails(customer, store, request.getTotalPrice());
+
+        // 4: process and save each OrderItem
+        saveOrderItems(order, store, request.getItems());
+    }
+
+    public Customer createOrRetrieveCustomer(String email) {
+        Customer customer = customerRepository.findByEmail(email);
+        if (customer != null) {
+            return customer;
+        }
+
+        Customer newCustomer = new Customer();
+        newCustomer.setEmail(email);
+        return customerRepository.save(newCustomer);
+    }
+
+    public Store retrieveStore(Long storeId) {
+        return storeRepository.findById(storeId)
+                .orElseThrow(() -> new RuntimeException("Store not found with ID: " + storeId));
+    }
+
+    public OrderDetails createOrderDetails(Customer customer, Store store, Double totalPrice) {
+        OrderDetails order = new OrderDetails();
+        order.setCustomer(customer);
+        order.setStore(store);
+        order.setTotalPrice(totalPrice);
+        order.setDate(LocalDateTime.now());
+        return orderDetailsRepository.save(order);
+    }
+
+    public void saveOrderItems(OrderDetails order, Store store, List<OrderItemDTO> items) {
+        for (OrderItemDTO itemDTO : items) {
+            // retrieve inventory
+            Inventory inventory = inventoryRepository.findByProductIdandStoreId(itemDTO.getProductId(), store.getId());
+            if (inventory == null || inventory.getQuantity() < itemDTO.getQuantity()) {
+                throw new RuntimeException("Insufficient stock for product ID " + itemDTO.getProductId());
+            }
+
+            // update inventory
+            inventory.setQuantity(inventory.getQuantity() - itemDTO.getQuantity());
+            inventoryRepository.save(inventory);
+
+            // create and save OrderItem
+            OrderItem orderItem = new OrderItem();
+            orderItem.setOrder(order);
+            orderItem.setProduct(inventory.getProduct());
+            orderItem.setQuantity(itemDTO.getQuantity());
+            orderItem.setPrice(inventory.getProduct().getPrice());
+            orderItemRepository.save(orderItem);
+        }
+    }
 }
