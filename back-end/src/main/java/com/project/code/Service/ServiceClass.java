@@ -1,26 +1,45 @@
 package com.project.code.Service;
 
 
+import com.project.code.Model.Inventory;
+import com.project.code.Model.Product;
+import com.project.code.Model.Store;
+import com.project.code.Repo.InventoryRepository;
+import com.project.code.Repo.ProductRepository;
+
+import java.util.Optional;
+
 public class ServiceClass {
+
+    public InventoryRepository inventoryRepository;
+
+    public ProductRepository productRepository;
+
+    public ServiceClass(InventoryRepository inventoryRepository, ProductRepository productRepository) {
+        this.inventoryRepository = inventoryRepository;
+        this.productRepository = productRepository;
+    }
     
-// 1. **validateInventory Method**:
-//    - Checks if an inventory record exists for a given product and store combination.
-//    - Parameters: `Inventory inventory`
-//    - Return Type: `boolean` (Returns `false` if inventory exists, otherwise `true`)
+    public boolean validateInventory(Product product, Store store) {
+        Inventory inventory = inventoryRepository.findByProductIdAndStoreId(product.getId(), store.getId());
 
-// 2. **validateProduct Method**:
-//    - Checks if a product exists by its name.
-//    - Parameters: `Product product`
-//    - Return Type: `boolean` (Returns `false` if a product with the same name exists, otherwise `true`)
+        return inventory != null;
+    }
+    
+    public boolean validateProduct(Product product) {
+        Optional<Product> repoProd = productRepository.findByName(product.getName());
 
-// 3. **ValidateProductId Method**:
-//    - Checks if a product exists by its ID.
-//    - Parameters: `long id`
-//    - Return Type: `boolean` (Returns `false` if the product does not exist with the given ID, otherwise `true`)
+        return repoProd.isPresent();
+    }
+    
+    public boolean validateProductId(Long id) {
+        Optional<Product> product = productRepository.findById(id);
 
-// 4. **getInventoryId Method**:
-//    - Fetches the inventory record for a given product and store combination.
-//    - Parameters: `Inventory inventory`
-//    - Return Type: `Inventory` (Returns the inventory record for the product-store combination)
-
+        return product.isPresent();
+    }
+    
+    public Inventory getInventoryMethod(Inventory inventory) {
+        Inventory foundInventoryRecord = inventoryRepository.findByProductIdAndStoreId(inventory.getProduct().getId(), inventory.getStore().getId());
+        return foundInventoryRecord;
+    }
 }
