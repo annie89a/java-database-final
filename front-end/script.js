@@ -120,7 +120,7 @@ function fillProductId(count) {
     suggestion = document.getElementById(`OrderSuggestion${count}`);
     productId = document.getElementById(`orderProductName${count}`).value
     if (productId.trim() !== '') {
-        let url = `${apiURL}/inventory/search/${productId}/${storeId}`;
+        let url = `$https://anisha89a-8080.theiadockernext-0-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai/inventory/search/${productId}/${storeId}`;
         fetch(url, {
             method: "GET",
             headers: { "content-type": "application/json" },
