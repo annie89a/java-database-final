@@ -20,13 +20,13 @@ public class ServiceClass {
         this.productRepository = productRepository;
     }
     
-    public boolean validateInventory(Product product, Store store) {
-        Inventory inventory = inventoryRepository.findByProductIdAndStoreId(product.getId(), store.getId());
+    public boolean validateInventory(Inventory inventory) {
+        Inventory foundInventory = inventoryRepository.findByProductIdAndStoreId(inventory.getProduct().getId(), inventory.getStore().getId());
 
-        return inventory != null;
+        return foundInventory != null;
     }
     
-    public boolean validateProduct(Product product) {
+    public boolean validateProductByName(Product product) {
         Optional<Product> repoProd = productRepository.findByName(product.getName());
 
         return repoProd.isPresent();
@@ -38,7 +38,7 @@ public class ServiceClass {
         return product.isPresent();
     }
     
-    public Inventory getInventoryMethod(Inventory inventory) {
+    public Inventory getInventory(Inventory inventory) {
         Inventory foundInventoryRecord = inventoryRepository.findByProductIdAndStoreId(inventory.getProduct().getId(), inventory.getStore().getId());
         return foundInventoryRecord;
     }
