@@ -6,9 +6,10 @@ import com.project.code.Model.Product;
 import com.project.code.Model.Store;
 import com.project.code.Repo.InventoryRepository;
 import com.project.code.Repo.ProductRepository;
+import org.springframework.stereotype.Service;
 
 import java.util.Optional;
-
+@Service
 public class ServiceClass {
 
     public InventoryRepository inventoryRepository;

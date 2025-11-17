@@ -5,7 +5,9 @@ import com.project.code.Repo.*;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import org.springframework.stereotype.Service;
 
+@Service
 public class OrderService {
 
     private final ProductRepository productRepository;
@@ -91,7 +93,7 @@ public class OrderService {
                     .orElseThrow(() -> new RuntimeException("Product not found with ID: " + productDTO.getId()));
 
             OrderItem orderItem = new OrderItem();
-            orderItem.setOrderDetail(orderDetails);
+            orderItem.setOrder(orderDetails);
             orderItem.setProduct(product);
             orderItem.setQuantity(productDTO.getQuantity());
             orderItem.setPrice(productDTO.getPrice() * productDTO.getQuantity());
