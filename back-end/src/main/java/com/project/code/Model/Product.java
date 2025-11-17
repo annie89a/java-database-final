@@ -16,22 +16,22 @@ public class Product {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotNull
+    @NotNull(message = "sku cannot be null")
     @Column(unique = true)
     private String sku;
 
-    @NotNull
+    @NotNull(message = "name cannot be null")
     private String name;
 
-    @NotNull
+    @NotNull(message = "category cannot be null")
     private String category;
 
-    @NotNull
+    @NotNull(message = "price cannot be null")
     private Double price;
 
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonManagedReference("inventory-product")
-    private List<Inventory> inventories;
+    private List<Inventory> inventory;
 
     public Product() {
     }
@@ -77,12 +77,12 @@ public class Product {
         this.sku = sku;
     }
 
-    public List<Inventory> getInventories() {
-        return inventories;
+    public List<Inventory> getInventory() {
+        return inventory;
     }
 
-    public void setInventories(List<Inventory> inventories) {
-        this.inventories = inventories;
+    public void setInventory(List<Inventory> inventory) {
+        this.inventory = inventory;
     }
 }
 

@@ -4,6 +4,7 @@ package com.project.code.Model;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,21 +17,28 @@ public class Store {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotBlank
+    @NotNull(message = "Name cannot be null")
+    @NotBlank(message = "Name cannot be blank")
     private String name;
 
-    @NotBlank
+    @NotNull(message = "address cannot be null")
+    @NotBlank(message = "address cannot be blank")
     private String address;
 
     @OneToMany(mappedBy = "store", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonManagedReference("inventory-store")
-    private List<Inventory> inventoryEntries = new ArrayList<>();
+    private List<Inventory> inventoryEntries;
 
     @OneToMany(mappedBy = "store", fetch = FetchType.LAZY)
     @JsonManagedReference("store-orders")
     private List<OrderDetails> orders = new ArrayList<>();
 
     public Store() {
+    }
+
+    public Store(String name, String address) {
+        this.name = name;
+        this.address = address;
     }
 
     public Long getId() {

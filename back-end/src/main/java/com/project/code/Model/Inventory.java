@@ -15,14 +15,12 @@ public class Inventory {
     @ManyToOne
     @JsonBackReference("inventory-product")
     @JoinColumn(name = "product_id")
-    @NotNull
     private Product product;
 
 
     @ManyToOne
     @JsonBackReference("inventory-store")
     @JoinColumn(name = "store_id")
-    @NotNull
     private Store store;
 
     private Integer stockLevel;
@@ -67,6 +65,15 @@ public class Inventory {
 
     public void setStockLevel(Integer stockLevel) {
         this.stockLevel = stockLevel;
+    }
+
+    public String toString() {
+        return "Inventory{" +
+                "id=" + id +
+                ", product=" + (product != null ? product.getId() : "null") +
+                ", store=" + (store != null ? store.getId() : "null") +
+                ", stockLevel=" + stockLevel +
+                '}';
     }
 
 }

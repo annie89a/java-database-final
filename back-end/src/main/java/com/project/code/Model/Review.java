@@ -2,6 +2,7 @@ package com.project.code.Model;
 
 import org.springframework.data.mongodb.core.mapping.Document;
 import jakarta.validation.constraints.NotNull;
+import org.springframework.data.annotation.Id;
 
 @Document(collection = "reviews")
 public class Review {
@@ -11,9 +12,9 @@ public class Review {
     private Long customerId;
     @NotNull(message = "Product Id cannot be null")
     private Long productId;
-    @NotNull(message = "Store Id  cannot be null")
+    @NotNull(message = "Store Id cannot be null")
     private Long storeId;
-    @NotNull(message = "Rating  cannot be null")
+    @NotNull(message = "Rating cannot be null")
     private Integer rating;
     private String comment;
 
